@@ -1,0 +1,31 @@
+##Machine Learning Project
+========================================================
+
+First we load the data sets and caret package which has training,and preprocess functions
+```{r}
+train=read.csv("pml-training.csv")
+library(caret)
+```
+
+create a training and cross validation sets 
+```{r}
+trControl = trainControl(method = "cv", number = 4)
+samp=sample(19622,.4*19622)
+training<-train[samp,]
+cv=train[-samp,]
+
+
+```
+Next I build the predictive model using random forest and the label num_window as predictor
+
+```{r , message=FALSE, warning=FALSE}
+modFit <- train(classe ~num_window,data = training,method="rf",trainControl=trControl)
+
+```
+calculate the error on cv 
+```{r}
+predcv<-predict(modFit,newdata=cv)
+table(cv$classe,predcv)
+
+```
+the cross validation accuracy is about 99.99%.This is what i predict the out of sample error to be
